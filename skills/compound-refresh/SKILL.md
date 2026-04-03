@@ -70,7 +70,20 @@ description: 维护全局知识库 ~/.claude/knowledge/solutions/，校验文档
 - 替换：用 Write 重写
 - 删除：用 Bash `rm` 删除
 
-### Phase 6: 输出报告
+### Phase 6: 同步到 GitHub
+
+所有操作执行完毕后，将变更同步到远程仓库：
+
+```bash
+cd ~/.claude/knowledge && git add -A && git commit -m "refresh: [操作摘要]" && git pull --rebase origin main && git push origin main
+```
+
+注意事项：
+- commit message 使用 `refresh: ` 前缀，后跟操作摘要（如 `refresh: 更新 2 份, 合并 1 份, 删除 1 份`）
+- pull --rebase 确保多设备同步时不产生 merge commit
+- 如果 push 失败，提示用户稍后手动执行 `cd ~/.claude/knowledge && git push`，不要阻塞流程
+
+### Phase 7: 输出报告
 
 ```
 维护完成:

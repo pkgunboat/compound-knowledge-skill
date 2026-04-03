@@ -126,7 +126,21 @@ related: [相关文档路径列表，可选]
 2. 文件名格式：`[简短描述-kebab-case].md`
 3. 用 Write 工具写入文件
 
-### Phase 5: 确认输出
+### Phase 5: 同步到 GitHub
+
+写入文件后，自动将变更同步到远程仓库：
+
+```bash
+cd ~/.claude/knowledge && git add -A && git commit -m "compound: [简明标题]" && git pull --rebase origin main && git push origin main
+```
+
+注意事项：
+- commit message 使用 `compound: ` 前缀 + 文档标题
+- 如果是更新已有文档，commit message 使用 `update: [简明标题]`
+- pull --rebase 确保多设备同步时不产生 merge commit
+- 如果 push 失败（网络问题等），提示用户稍后手动执行 `cd ~/.claude/knowledge && git push`，不要阻塞流程
+
+### Phase 6: 确认输出
 
 输出摘要：
 

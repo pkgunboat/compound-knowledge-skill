@@ -89,6 +89,52 @@ Start a new Claude Code session and check that the three commands appear in your
 /compound-refresh
 ```
 
+## Multi-Device Sync
+
+The knowledge base supports automatic GitHub sync. Every time `/compound` or `/compound-refresh` modifies the knowledge store, changes are automatically committed and pushed to a private GitHub repo.
+
+### Setup (once per device)
+
+**First device (initialize):**
+
+```bash
+# Initialize knowledge store as a git repo
+cd ~/.claude/knowledge
+git init
+git add -A
+git commit -m "init: knowledge base"
+
+# Create a private GitHub repo and push
+gh repo create knowledge-base --private --description "Personal knowledge base" --source . --push
+```
+
+**Additional devices:**
+
+```bash
+# Clone your knowledge base
+git clone git@github.com:<YOUR_USERNAME>/knowledge-base.git ~/.claude/knowledge
+```
+
+### How Sync Works
+
+```
+Device A                          GitHub                         Device B
+   │                                │                               │
+   │  /compound                     │                               │
+   │  ──► write doc                 │                               │
+   │  ──► git commit + push ──────► │                               │
+   │                                │                               │
+   │                                │   /compound-search            │
+   │                                │ ◄────── git pull --rebase ──  │
+   │                                │         search locally        │
+   │                                │                               │
+```
+
+- `/compound` — after writing, auto runs: `git add → commit → pull --rebase → push`
+- `/compound-refresh` — after all edits, auto runs the same sync flow
+- `/compound-search` — read-only, no sync needed (but you can manually `git pull` to get latest)
+- If push fails (e.g. network issue), the skill continues normally and reminds you to push later
+
 ## Knowledge Categories
 
 Documents are auto-classified into these categories:
